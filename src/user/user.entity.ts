@@ -21,7 +21,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({name: "is_active"})
   isActive: boolean;
 
   @CreateDateColumn()

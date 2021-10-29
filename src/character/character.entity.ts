@@ -30,17 +30,17 @@ export class Character {
   @Column()
   mass: number;
 
-  @Column({ length: 100 })
-  hair_color: string;
+  @Column({ length: 100, name: 'hair_color' })
+  hairColor: string;
 
-  @Column({ length: 100 })
-  skin_color: string;
+  @Column({ length: 100, name: 'skin_color' })
+  skinColor: string;
 
-  @Column({ length: 100 })
-  eye_color: string;
+  @Column({ length: 100, name: 'eye_color' })
+  eyeColor: string;
 
-  @Column({ length: 100 })
-  birth_year: string;
+  @Column({ length: 100, name: 'birth_year' })
+  birthYear: string;
 
   @Column({ type: 'enum', enum: Gender })
   gender: Gender;
@@ -63,11 +63,11 @@ export class Character {
   @JoinTable({
     name: 'favourite_character',
     joinColumn: {
-      name: 'character',
+      name: 'character_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'user',
+      name: 'user_id',
       referencedColumnName: 'id',
     },
   })

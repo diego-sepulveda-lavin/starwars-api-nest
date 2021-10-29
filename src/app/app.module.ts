@@ -20,8 +20,7 @@ import { User } from '../user/user.entity';
         type: 'mysql',
         synchronize: true, // change when ready
         username: process.env.DB_USERNAME,
-        logger: 'debug',
-        logging: true,
+        logging: 'all',
       }),
     }),
   ],

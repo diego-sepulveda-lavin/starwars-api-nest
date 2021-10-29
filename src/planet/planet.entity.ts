@@ -18,11 +18,11 @@ export class Planet {
   @Column({ length: 100, unique: true })
   name: string;
 
-  @Column()
-  rotation_period: number;
+  @Column({ name: 'rotation_period' })
+  rotationPeriod: number;
 
-  @Column()
-  orbital_period: number;
+  @Column({ name: 'orbital_period' })
+  orbitalPeriod: number;
 
   @Column()
   diameter: number;
@@ -36,8 +36,8 @@ export class Planet {
   @Column({ length: 100 })
   terrain: string;
 
-  @Column()
-  surface_water: number;
+  @Column({ name: 'surface_water' })
+  surfaceWater: number;
 
   @Column()
   population: number;
@@ -57,11 +57,11 @@ export class Planet {
   @JoinTable({
     name: 'favourite_planet',
     joinColumn: {
-      name: 'planet',
+      name: 'planet_id',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'user',
+      name: 'user_id',
       referencedColumnName: 'id',
     },
   })
