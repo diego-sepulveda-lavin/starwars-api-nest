@@ -2,10 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 
+// Modules
+import { UsersModule } from '../users/users.module';
+
 // Entities
 import { Character } from '../character/character.entity';
 import { Planet } from '../planet/planet.entity';
-import { User } from '../user/user.entity';
+import { User } from '../users/user.entity';
 
 @Module({
   imports: [
@@ -21,10 +24,10 @@ import { User } from '../user/user.entity';
         synchronize: true, // change when ready
         username: process.env.DB_USERNAME,
         logging: 'all',
+        dropSchema: true,
       }),
     }),
+    UsersModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

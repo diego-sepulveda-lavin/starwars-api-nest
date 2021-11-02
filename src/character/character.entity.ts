@@ -8,7 +8,7 @@ import {
   JoinTable,
 } from 'typeorm';
 
-import { User } from '../user/user.entity';
+import { User } from '../users/user.entity';
 
 enum Gender {
   MALE = 'male',
