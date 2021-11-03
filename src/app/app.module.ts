@@ -24,7 +24,7 @@ import { User } from '../users/user.entity';
         synchronize: true, // change when ready
         username: process.env.DB_USERNAME,
         logging: 'all',
-        dropSchema: true,
+        dropSchema: false,
       }),
     }),
     UsersModule,
