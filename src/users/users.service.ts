@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash, genSalt } from 'bcrypt';
@@ -22,7 +22,7 @@ export class UsersService {
   async findOneById(id: string) {
     const user = await this.usersRepository.findOne(id);
 
-    if (!user) return `User with id ${id} was not found`;
+    if (!user) throw new HttpException(`User with id ${id} was not found`, 404);
 
     return user;
   }
@@ -30,11 +30,11 @@ export class UsersService {
   async createNewUser(data: CreateUserDto) {
     const { email, password, isActive } = data;
 
-    if (!email) return 'You must provide an email';
-    if (!password) return 'You must provide an password';
+    if (!email) throw new HttpException('You must provide an email', 400);
+    if (!password) throw new HttpException('You must provide an password', 400);
 
     const existingUser = await this.usersRepository.findOne({ email: email });
-    if (existingUser) return 'Email already in use';
+    if (existingUser) throw new HttpException('Email already in use', 400);
 
     const user = new User();
     const salt = await genSalt();
@@ -59,13 +59,13 @@ export class UsersService {
     const { email, isActive, password } = data;
 
     const existingUser = await this.usersRepository.findOne(id);
-    if (!existingUser) return `User with id ${id} was not found`;
+    if (!existingUser) throw new HttpException(`User with id ${id} was not found`, 404);
 
-    if (!email) return 'You must provide an new email';
-    if (!password) return 'You must provide a new password';
+    if (!email) throw new HttpException('You must provide a new email', 400);
+    if (!password) throw new HttpException('You must provide a new password', 400);
 
     const existingEmail = await this.usersRepository.findOne({ email: email });
-    if (existingEmail) return 'Email already in use, try another';
+    if (existingEmail) throw new HttpException('Email already in use, try another', 400);
 
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
