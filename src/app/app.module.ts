@@ -1,33 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
 
 // Modules
+import { DbConfigModule } from 'src/db-config/db-config.module';
+import { CharactersModule } from '../characters/characters.module';
+import { PlanetsModule } from '../planets/planets.module';
 import { UsersModule } from '../users/users.module';
 
-// Entities
-import { Character } from '../character/entities/character.entity';
-import { Planet } from '../planet/entities/planet.entity';
-import { User } from '../users/entities/user.entity';
-
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        database: process.env.DB_NAME,
-        entities: [Character, Planet, User],
-        host: process.env.DB_HOST,
-        password: process.env.DB_PASSWORD,
-        port: parseInt(process.env.DB_PORT, 10),
-        type: 'mysql',
-        synchronize: true, // change when ready
-        username: process.env.DB_USERNAME,
-        logging: 'all',
-        dropSchema: false,
-      }),
-    }),
-    UsersModule,
-  ],
+  imports: [DbConfigModule, CharactersModule, PlanetsModule, UsersModule],
 })
 export class AppModule {}

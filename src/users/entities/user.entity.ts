@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
 
-import { Character } from '../../character/entities/character.entity';
-import { Planet } from '../../planet/entities/planet.entity';
+import { Character } from '../../characters/entities/character.entity';
+import { Planet } from '../../planets/entities/planet.entity';
 
 @Entity()
 export class User {
