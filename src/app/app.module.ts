@@ -6,9 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from '../users/users.module';
 
 // Entities
-import { Character } from '../character/character.entity';
-import { Planet } from '../planet/planet.entity';
-import { User } from '../users/user.entity';
+import { Character } from '../character/entities/character.entity';
+import { Planet } from '../planet/entities/planet.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [

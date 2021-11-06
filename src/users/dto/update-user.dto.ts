@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
   @ApiProperty()
@@ -7,6 +7,6 @@ export class UpdateUserDto {
   @ApiProperty()
   password: string;
 
-  @ApiPropertyOptional()
+  @ApiProperty({ required: false, default: true })
   isActive?: boolean;
 }

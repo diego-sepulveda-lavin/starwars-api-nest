@@ -1,8 +1,8 @@
 import { Controller, Body, Param, Delete, Get, Post, Put } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CreateUserDto } from './create-user.dto';
-import { UpdateUserDto } from './update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -37,7 +37,7 @@ export class UsersController {
 
   @Put(':id')
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.' })
-  @ApiResponse({ status: 400, description: 'Some fields are missing' })
+  @ApiResponse({ status: 400, description: 'Some fields are missing or data already in use' })
   updateUser(@Param('id') id: string, @Body() modifyUserDto: UpdateUserDto) {
     return this.usersService.updateUser(id, modifyUserDto);
   }
