@@ -3,69 +3,65 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash, genSalt } from 'bcrypt';
 
-import { User } from './entities/user.entity';
+// Dtos
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+// Entities
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
-  async findAllUsers() {
-    const allUsers = await this.usersRepository.find({
+  async getAllUsers(): Promise<User[]> {
+    const users = await this.usersRepository.find({
       select: ['id', 'email', 'isActive', 'created', 'edited'],
     });
 
-    return allUsers;
+    return users;
   }
 
-  async findUserById(id: string) {
-    const user = await this.usersRepository.findOne(id);
-
-    if (!user) throw new HttpException(`User with id ${id} was not found`, 404);
-
-    return user;
+  async getUserById(id: string): Promise<User> {
+    return await this.usersRepository.findOne(id, { select: ['id', 'email', 'isActive', 'created', 'edited'] });
   }
 
-  async createNewUser(data: CreateUserDto) {
+  async createNewUser(data: CreateUserDto): Promise<User> {
     const { email, password, isActive } = data;
 
-    if (!email) throw new HttpException('You must provide an email', 400);
-    if (!password) throw new HttpException('You must provide an password', 400);
+    if (!email || !password) return;
 
-    const existingUser = await this.usersRepository.findOne({ email: email });
-    if (existingUser) throw new HttpException('Email already in use', 400);
+    const existingUser = await this.usersRepository.findOne({ email });
+    if (existingUser) return;
 
-    const user = new User();
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
+    const user = this.usersRepository.create({
+      email,
+      isActive,
+      password: hashedPassword,
+    });
 
-    user.password = hashedPassword;
-    user.email = email;
-    user.isActive = isActive;
-
-    const { password: _, ...createdUser } = await this.usersRepository.save(user);
-
-    return createdUser;
+    const savedUser = await this.usersRepository.save(user);
+    return await this.usersRepository.findOne(savedUser, {
+      select: ['id', 'email', 'isActive', 'created', 'edited'],
+    });
   }
 
-  async removeOneById(id: string) {
-    const result = await this.usersRepository.delete(id);
-
-    return result;
+  async removeUserById(id: string): Promise<User> {
+    const user = await this.usersRepository.findOne(id, {
+      select: ['id', 'email', 'isActive', 'created', 'edited'],
+    });
+    if (!user) return;
+    return await this.usersRepository.remove(user);
   }
 
-  async updateUser(id: string, data: UpdateUserDto) {
+  async updateUserById(id: string, data: UpdateUserDto): Promise<User> {
     const { email, isActive, password } = data;
 
+    if (!email || !password) return;
+
     const existingUser = await this.usersRepository.findOne(id);
-    if (!existingUser) throw new HttpException(`User with id ${id} was not found`, 404);
-
-    if (!email) throw new HttpException('You must provide a new email', 400);
-    if (!password) throw new HttpException('You must provide a new password', 400);
-
-    const existingEmail = await this.usersRepository.findOne({ email: email });
-    if (existingEmail) throw new HttpException('Email already in use, try another', 400);
+    if (!existingUser) return;
 
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
@@ -76,6 +72,8 @@ export class UsersService {
 
     const modifiedUser = await this.usersRepository.save(existingUser);
 
-    return modifiedUser;
+    return await this.usersRepository.findOne(modifiedUser.id, {
+      select: ['id', 'email', 'isActive', 'created', 'edited'],
+    });
   }
 }

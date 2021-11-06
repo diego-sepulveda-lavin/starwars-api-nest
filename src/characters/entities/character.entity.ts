@@ -10,7 +10,7 @@ import {
 
 import { User } from '../../users/entities/user.entity';
 
-enum Gender {
+export enum Gender {
   MALE = 'male',
   FEMALE = 'female',
   NOT_AVAILABLE = 'n/a',

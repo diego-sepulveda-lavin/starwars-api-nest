@@ -1,8 +1,22 @@
-import { Controller, Body, Param, Delete, Get, Post, Put } from '@nestjs/common';
+import {
+  Controller,
+  Body,
+  Param,
+  Delete,
+  Get,
+  Post,
+  Put,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
+// Dtos
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+// Entities
+import { User } from './entities/user.entity';
+// Services
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -11,34 +25,50 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get()
-  @ApiResponse({ status: 200, description: 'Returns a list of all users' })
-  findAllUsers() {
-    return this.usersService.findAllUsers();
+  @ApiResponse({ status: 200, description: 'Returns a list with all users' })
+  async getAllUsers(): Promise<User[]> {
+    return await this.usersService.getAllUsers();
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Returns a specific user for given id' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
-  findUserById(@Param('id') id: string) {
-    return this.usersService.findUserById(id);
+  async getUserById(@Param('id') id: string): Promise<User> {
+    const user = await this.usersService.getUserById(id);
+
+    if (!user) throw new NotFoundException('User not found for given id');
+
+    return user;
   }
 
   @Post()
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing' })
-  createNewUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.createNewUser(createUserDto);
+  async createNewUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    const user = await this.usersService.createNewUser(createUserDto);
+
+    if (!user) throw new BadRequestException('Some fields are missing or email already in use');
+
+    return user;
   }
 
   @Delete(':id')
-  removeOneById(@Param('id') id: string) {
-    return this.usersService.removeOneById(id);
+  @ApiResponse({ status: 200, description: 'Returns deleted user for given id' })
+  @ApiResponse({ status: 404, description: 'User not found for given id' })
+  async removeUserById(@Param('id') id: string): Promise<User> {
+    const user = await this.usersService.removeUserById(id);
+    if (!user) throw new NotFoundException('User not found for given id');
+
+    return user;
   }
 
   @Put(':id')
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.' })
-  @ApiResponse({ status: 400, description: 'Some fields are missing or data already in use' })
-  updateUser(@Param('id') id: string, @Body() modifyUserDto: UpdateUserDto) {
-    return this.usersService.updateUser(id, modifyUserDto);
+  @ApiResponse({ status: 404, description: 'User not found for given id' })
+  async updateUserById(@Param('id') id: string, @Body() modifyUserDto: UpdateUserDto) {
+    const user = await this.usersService.updateUserById(id, modifyUserDto);
+    if (!user) throw new NotFoundException('User not found for given id');
+
+    return user;
   }
 }
