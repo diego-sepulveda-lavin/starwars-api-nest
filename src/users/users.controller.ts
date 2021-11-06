@@ -19,8 +19,8 @@ export class UsersController {
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Returns a specific user for given id' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
-  findOneById(@Param('id') id: string) {
-    return this.usersService.findOneById(id);
+  findUserById(@Param('id') id: string) {
+    return this.usersService.findUserById(id);
   }
 
   @Post()

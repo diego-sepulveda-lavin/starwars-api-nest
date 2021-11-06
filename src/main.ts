@@ -9,7 +9,6 @@ async function bootstrap() {
     .setTitle('Starwars API')
     .setDescription('A basic Starwars API')
     .setVersion('1.0')
-    .addTag('default')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

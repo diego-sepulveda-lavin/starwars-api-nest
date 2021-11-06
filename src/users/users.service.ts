@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash, genSalt } from 'bcrypt';
 
-import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class UsersService {
     return allUsers;
   }
 
-  async findOneById(id: string) {
+  async findUserById(id: string) {
     const user = await this.usersRepository.findOne(id);
 
     if (!user) throw new HttpException(`User with id ${id} was not found`, 404);
