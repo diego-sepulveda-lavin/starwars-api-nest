@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { Gender } from '../entities/character.entity';
 
-export class CreateCharacterDto {
+export class UpdateCharacterDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()

@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash, genSalt } from 'bcrypt';
@@ -61,20 +61,20 @@ export class UsersService {
   async updateUserById(id: number, data: UpdateUserDto): Promise<User> {
     const { email, isActive, password } = data;
 
-    const existingUser = await this.usersRepository.findOne(id);
-    if (!existingUser) throw new NotFoundException('User not found for given id');
+    const user = await this.usersRepository.findOne(id);
+    if (!user) throw new NotFoundException('User not found for given id');
 
-    const existingEmail = await this.usersRepository.findOne({ email });
-    if (existingEmail) throw new BadRequestException('Email already in use');
+    const userWithExistingEmail = await this.usersRepository.findOne({ email });
+    if (userWithExistingEmail) throw new BadRequestException('Email already in use');
 
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
 
-    existingUser.email = email;
-    existingUser.password = hashedPassword;
-    existingUser.isActive = isActive;
+    user.email = email;
+    user.password = hashedPassword;
+    user.isActive = isActive;
 
-    const modifiedUser = await this.usersRepository.save(existingUser);
+    const modifiedUser = await this.usersRepository.save(user);
 
     return await this.usersRepository.findOne(modifiedUser.id, {
       select: ['id', 'email', 'isActive', 'created', 'edited'],

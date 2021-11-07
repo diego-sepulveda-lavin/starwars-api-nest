@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 // Dtos
 import { CreateCharacterDto } from './dto/create-character.dto';
+import { UpdateCharacterDto } from './dto/update-character.dto';
 // Entities
 import { Character } from './entities/character.entity';
 // Services
@@ -11,20 +12,33 @@ import { CharactersService } from './characters.service';
 @ApiTags('characters')
 @Controller('characters')
 export class CharactersController {
-  constructor(private charactersService: CharactersService) {}
+  constructor(private readonly charactersService: CharactersService) {}
 
   @Get()
-  getAllCharacters(): Promise<Character[]> {
-    return this.charactersService.getAllCharacters();
+  async getAllCharacters(): Promise<Character[]> {
+    return await this.charactersService.getAllCharacters();
   }
 
   @Get(':id')
-  getCharacterById(@Param('id') id: string): Promise<Character> {
-    return this.charactersService.getCharacterById(id);
+  async getCharacterById(@Param('id', ParseIntPipe) id: number): Promise<Character> {
+    return await this.charactersService.getCharacterById(id);
   }
 
   @Post()
-  createNewCharacter(@Body() createCharacterDto: CreateCharacterDto): Promise<Character> {
-    return this.charactersService.createNewCharacter(createCharacterDto);
+  async createNewCharacter(@Body() createCharacterDto: CreateCharacterDto): Promise<Character> {
+    return await this.charactersService.createNewCharacter(createCharacterDto);
+  }
+
+  @Delete(':id')
+  async removeCharacterById(@Param('id', ParseIntPipe) id: number): Promise<Character> {
+    return await this.charactersService.removeCharacterById(id);
+  }
+
+  @Put(':id')
+  async updateCharacterById(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateCharacterDto: UpdateCharacterDto,
+  ): Promise<Character> {
+    return await this.charactersService.updateCharacterById(id, updateCharacterDto);
   }
 }

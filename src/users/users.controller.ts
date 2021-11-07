@@ -1,15 +1,4 @@
-import {
-  Controller,
-  Body,
-  Param,
-  Delete,
-  Get,
-  Post,
-  Put,
-  NotFoundException,
-  BadRequestException,
-  ParseIntPipe,
-} from '@nestjs/common';
+import { Controller, Body, Param, Delete, Get, Post, Put, ParseIntPipe } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
@@ -42,9 +31,6 @@ export class UsersController {
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
   async createNewUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    if (!createUserDto.email) throw new BadRequestException('Email field missing');
-    if (!createUserDto.password) throw new BadRequestException('Password field missing');
-
     return await this.usersService.createNewUser(createUserDto);
   }
 
@@ -59,10 +45,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
-  async updateUserById(@Param('id', ParseIntPipe) id: number, @Body() modifyUserDto: UpdateUserDto): Promise<User> {
-    if (!modifyUserDto.email) throw new BadRequestException('Email field missing');
-    if (!modifyUserDto.password) throw new BadRequestException('Password field missing');
-
-    return await this.usersService.updateUserById(id, modifyUserDto);
+  async updateUserById(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
+    return await this.usersService.updateUserById(id, updateUserDto);
   }
 }
