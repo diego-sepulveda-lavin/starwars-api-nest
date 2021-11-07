@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash, genSalt } from 'bcrypt';
@@ -21,17 +21,19 @@ export class UsersService {
     return users;
   }
 
-  async getUserById(id: string): Promise<User> {
-    return await this.usersRepository.findOne(id, { select: ['id', 'email', 'isActive', 'created', 'edited'] });
+  async getUserById(id: number): Promise<User> {
+    const user = await this.usersRepository.findOne(id, {
+      select: ['id', 'email', 'isActive', 'created', 'edited'],
+    });
+    if (!user) throw new NotFoundException('User not found for given id');
+    return user;
   }
 
   async createNewUser(data: CreateUserDto): Promise<User> {
     const { email, password, isActive } = data;
 
-    if (!email || !password) return;
-
     const existingUser = await this.usersRepository.findOne({ email });
-    if (existingUser) return;
+    if (existingUser) throw new BadRequestException('Email already in use');
 
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
@@ -42,26 +44,28 @@ export class UsersService {
     });
 
     const savedUser = await this.usersRepository.save(user);
-    return await this.usersRepository.findOne(savedUser, {
+
+    return await this.usersRepository.findOne(savedUser.id, {
       select: ['id', 'email', 'isActive', 'created', 'edited'],
     });
   }
 
-  async removeUserById(id: string): Promise<User> {
+  async removeUserById(id: number): Promise<User> {
     const user = await this.usersRepository.findOne(id, {
       select: ['id', 'email', 'isActive', 'created', 'edited'],
     });
-    if (!user) return;
+    if (!user) throw new NotFoundException('User not found for given id');
     return await this.usersRepository.remove(user);
   }
 
-  async updateUserById(id: string, data: UpdateUserDto): Promise<User> {
+  async updateUserById(id: number, data: UpdateUserDto): Promise<User> {
     const { email, isActive, password } = data;
 
-    if (!email || !password) return;
-
     const existingUser = await this.usersRepository.findOne(id);
-    if (!existingUser) return;
+    if (!existingUser) throw new NotFoundException('User not found for given id');
+
+    const existingEmail = await this.usersRepository.findOne({ email });
+    if (existingEmail) throw new BadRequestException('Email already in use');
 
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
