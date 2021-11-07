@@ -64,19 +64,21 @@ export class UsersService {
     const user = await this.usersRepository.findOne(id);
     if (!user) throw new NotFoundException('User not found for given id');
 
-    const userWithExistingEmail = await this.usersRepository.findOne({ email });
-    if (userWithExistingEmail) throw new BadRequestException('Email already in use');
+    const existingUser = await this.usersRepository.findOne({ email });
+    if (existingUser && existingUser.id !== id) {
+      throw new BadRequestException('Email already in use');
+    }
 
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
 
-    user.email = email;
-    user.password = hashedPassword;
-    user.isActive = isActive;
+    await this.usersRepository.update(id, {
+      email,
+      isActive,
+      password: hashedPassword,
+    });
 
-    const modifiedUser = await this.usersRepository.save(user);
-
-    return await this.usersRepository.findOne(modifiedUser.id, {
+    return await this.usersRepository.findOne(id, {
       select: ['id', 'email', 'isActive', 'created', 'edited'],
     });
   }

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
+
 import { Gender } from '../entities/character.entity';
 
 export class CreateCharacterDto {
@@ -21,21 +22,25 @@ export class CreateCharacterDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Length(1, 100)
   hairColor: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Length(1, 100)
   skinColor: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Length(1, 100)
   eyeColor: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Length(1, 100)
   birthYear: string;
 
   @ApiProperty({ enum: Gender })

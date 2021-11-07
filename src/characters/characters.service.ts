@@ -56,20 +56,24 @@ export class CharactersService {
     const character = await this.charactersRepository.findOne(id);
     if (!character) throw new NotFoundException('Character not found for given id');
 
-    const characterWithExistingName = await this.charactersRepository.findOne({ name });
-    if (characterWithExistingName) throw new NotFoundException('Character name already exists');
+    const existingCharacter = await this.charactersRepository.findOne({ name });
+    if (existingCharacter && existingCharacter.id !== id) {
+      throw new BadRequestException('Character name already exists');
+    }
 
-    character.birthYear = birthYear;
-    character.eyeColor = eyeColor;
-    character.gender = gender;
-    character.hairColor = hairColor;
-    character.height = height;
-    character.homeworld = homeworld;
-    character.mass = mass;
-    character.name = name;
-    character.skinColor = skinColor;
-    character.url = url;
+    await this.charactersRepository.update(id, {
+      birthYear,
+      eyeColor,
+      gender,
+      hairColor,
+      height,
+      homeworld,
+      mass,
+      name,
+      skinColor,
+      url,
+    });
 
-    return await this.charactersRepository.save(character);
+    return await this.charactersRepository.findOne(id);
   }
 }

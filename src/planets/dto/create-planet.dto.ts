@@ -1,57 +1,55 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 
-import { Gender } from '../entities/character.entity';
-
-export class UpdateCharacterDto {
+export class CreatePlanetDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Length(1, 100)
   name: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  height: number;
+  rotationPeriod: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  mass: number;
+  orbitalPeriod: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  diameter: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  hairColor: string;
+  climate: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  skinColor: string;
+  gravity: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
   @Length(1, 100)
-  eyeColor: string;
+  terrain: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  @Length(1, 100)
-  birthYear: string;
-
-  @ApiProperty({ enum: Gender })
-  @IsNotEmpty()
-  @IsEnum(Gender)
-  gender: Gender;
+  @IsNumber()
+  surfaceWater: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  homeworld: string;
+  @IsNumber()
+  population: number;
 
   @ApiProperty()
   @IsNotEmpty()
