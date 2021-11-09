@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { writeFile } from 'fs/promises';
 import { Repository } from 'typeorm';
-
 // Entities
 import { Character } from 'src/characters/entities/character.entity';
 import { Planet } from 'src/planets/entities/planet.entity';
@@ -40,7 +39,7 @@ export class FeedInfoService {
   ) {}
 
   async getCharactersInfo() {
-    let charactersData: FeedCharacter[] = await this.getData('https://swapi.dev/api/people');
+    const charactersData: FeedCharacter[] = await this.getData('https://swapi.dev/api/people');
 
     this.writeDataToFile('characters.json', charactersData);
 
@@ -66,7 +65,7 @@ export class FeedInfoService {
   }
 
   async getPlanetsInfo() {
-    let planetsData: FeedPlanet[] = await this.getData('https://swapi.dev/api/planets');
+    const planetsData: FeedPlanet[] = await this.getData('https://swapi.dev/api/planets');
 
     this.writeDataToFile('planets.json', planetsData);
 
