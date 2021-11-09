@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
-
-import { Gender } from '../entities/character.entity';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class UpdateCharacterDto {
   @ApiProperty()
@@ -11,13 +9,13 @@ export class UpdateCharacterDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  height: number;
+  @IsString()
+  height: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  mass: number;
+  @IsString()
+  mass: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -43,10 +41,11 @@ export class UpdateCharacterDto {
   @Length(1, 100)
   birthYear: string;
 
-  @ApiProperty({ enum: Gender })
+  @ApiProperty()
   @IsNotEmpty()
-  @IsEnum(Gender)
-  gender: Gender;
+  @IsString()
+  @Length(1, 100)
+  gender: string;
 
   @ApiProperty()
   @IsNotEmpty()

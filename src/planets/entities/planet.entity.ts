@@ -19,13 +19,13 @@ export class Planet {
   name: string;
 
   @Column({ name: 'rotation_period' })
-  rotationPeriod: number;
+  rotationPeriod: string;
 
   @Column({ name: 'orbital_period' })
-  orbitalPeriod: number;
+  orbitalPeriod: string;
 
   @Column()
-  diameter: number;
+  diameter: string;
 
   @Column({ length: 100 })
   climate: string;
@@ -37,10 +37,10 @@ export class Planet {
   terrain: string;
 
   @Column({ name: 'surface_water' })
-  surfaceWater: number;
+  surfaceWater: string;
 
   @Column()
-  population: number;
+  population: string;
 
   @CreateDateColumn()
   created: Date;

@@ -10,12 +10,6 @@ import {
 
 import { User } from '../../users/entities/user.entity';
 
-export enum Gender {
-  MALE = 'male',
-  FEMALE = 'female',
-  NOT_AVAILABLE = 'n/a',
-}
-
 @Entity()
 export class Character {
   @PrimaryGeneratedColumn()
@@ -25,10 +19,10 @@ export class Character {
   name: string;
 
   @Column()
-  height: number;
+  height: string;
 
   @Column()
-  mass: number;
+  mass: string;
 
   @Column({ length: 100, name: 'hair_color' })
   hairColor: string;
@@ -42,8 +36,8 @@ export class Character {
   @Column({ length: 100, name: 'birth_year' })
   birthYear: string;
 
-  @Column({ type: 'enum', enum: Gender })
-  gender: Gender;
+  @Column({ length: 100 })
+  gender: string;
 
   @Column()
   homeworld: string;

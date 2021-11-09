@@ -1,23 +1,106 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { readFile, writeFile } from 'fs';
+import { writeFile } from 'fs/promises';
+import { Repository } from 'typeorm';
 
+// Entities
+import { Character } from 'src/characters/entities/character.entity';
+import { Planet } from 'src/planets/entities/planet.entity';
+
+interface FeedCharacter {
+  name: string;
+  height: string;
+  mass: string;
+  hair_color: string;
+  skin_color: string;
+  eye_color: string;
+  birth_year: string;
+  gender: string;
+  homeworld: string;
+  url: string;
+}
+interface FeedPlanet {
+  name: string;
+  rotation_period: string;
+  orbital_period: string;
+  diameter: string;
+  climate: string;
+  gravity: string;
+  terrain: string;
+  surface_water: string;
+  population: string;
+  url: string;
+}
 @Injectable()
 export class FeedInfoService {
+  constructor(
+    @InjectRepository(Character) private charactersRepository: Repository<Character>,
+    @InjectRepository(Planet) private planetsRepository: Repository<Planet>,
+  ) {}
+
   async getCharactersInfo() {
-    let charactersInfo = await this.getData('https://swapi.dev/api/people');
+    let charactersData: FeedCharacter[] = await this.getData('https://swapi.dev/api/people');
 
-    this.writeDataToFile('characters', charactersInfo);
+    this.writeDataToFile('characters.json', charactersData);
 
-    return charactersInfo;
+    for (const character of charactersData) {
+      const { birth_year, eye_color, gender, hair_color, height, homeworld, mass, name, skin_color, url } = character;
+
+      const newCharacter = this.charactersRepository.create({
+        birthYear: birth_year,
+        eyeColor: eye_color,
+        gender,
+        hairColor: hair_color,
+        height,
+        homeworld,
+        mass,
+        name,
+        skinColor: skin_color,
+        url,
+      });
+      await this.charactersRepository.save(newCharacter);
+    }
+
+    return { message: 'Characters data loaded succesfully in the db!' };
   }
 
   async getPlanetsInfo() {
-    let planetsInfo = await this.getData('https://swapi.dev/api/planets');
+    let planetsData: FeedPlanet[] = await this.getData('https://swapi.dev/api/planets');
 
-    this.writeDataToFile('planets', planetsInfo);
+    this.writeDataToFile('planets.json', planetsData);
 
-    return planetsInfo;
+    for (const planet of planetsData) {
+      const {
+        climate,
+        diameter,
+        gravity,
+        name,
+        orbital_period,
+        population,
+        rotation_period,
+        surface_water,
+        terrain,
+        url,
+      } = planet;
+
+      const newPlanet = this.planetsRepository.create({
+        climate,
+        diameter,
+        gravity,
+        name,
+        orbitalPeriod: orbital_period,
+        population,
+        rotationPeriod: rotation_period,
+        surfaceWater: surface_water,
+        terrain,
+        url,
+      });
+
+      await this.planetsRepository.save(newPlanet);
+    }
+
+    return { message: 'Planets data loaded succesfully in the db!' };
   }
 
   private async getData(url: string) {
@@ -37,12 +120,11 @@ export class FeedInfoService {
     return data;
   }
 
-  private writeDataToFile(filename: string, inputData: any[]) {
-    writeFile(__dirname + `/${filename}.json`, JSON.stringify(inputData), (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-    });
+  private writeDataToFile(file: string, inputData: any[]) {
+    try {
+      writeFile(__dirname + `/${file}`, JSON.stringify(inputData));
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

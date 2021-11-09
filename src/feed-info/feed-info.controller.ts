@@ -7,12 +7,12 @@ export class FeedInfoController {
   constructor(private readonly feedInfoService: FeedInfoService) {}
 
   @Get('characters')
-  getCharactersInfo() {
+  async getCharactersInfo() {
     return this.feedInfoService.getCharactersInfo();
   }
 
   @Get('planets')
-  getPlanetsInfo() {
-    return this.feedInfoService.getPlanetsInfo();
+  async getPlanetsInfo() {
+    return await this.feedInfoService.getPlanetsInfo();
   }
 }

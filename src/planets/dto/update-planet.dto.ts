@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Length, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class UpdatePlanetDto {
   @ApiProperty()
@@ -10,18 +10,18 @@ export class UpdatePlanetDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  rotationPeriod: number;
+  @IsString()
+  rotationPeriod: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  orbitalPeriod: number;
+  @IsString()
+  orbitalPeriod: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  diameter: number;
+  @IsString()
+  diameter: string;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -43,13 +43,13 @@ export class UpdatePlanetDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  surfaceWater: number;
+  @IsString()
+  surfaceWater: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  population: number;
+  @IsString()
+  population: string;
 
   @ApiProperty()
   @IsNotEmpty()
