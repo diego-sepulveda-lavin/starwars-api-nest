@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,7 +11,9 @@ import { Character } from './entities/character.entity';
 
 @Injectable()
 export class CharactersService {
-  constructor(@InjectRepository(Character) private charactersRepository: Repository<Character>) {}
+  constructor(
+    @InjectRepository(Character) private charactersRepository: Repository<Character>
+  ) {}
 
   async getAllCharacters(): Promise<Character[]> {
     return await this.charactersRepository.find();
