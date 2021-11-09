@@ -8,6 +8,11 @@ export class FeedInfoController {
 
   @Get('characters')
   getCharactersInfo() {
-    return this.feedInfoService.getCharactersInfo()
+    return this.feedInfoService.getCharactersInfo();
+  }
+
+  @Get('planets')
+  getPlanetsInfo() {
+    return this.feedInfoService.getPlanetsInfo();
   }
 }

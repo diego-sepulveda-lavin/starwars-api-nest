@@ -5,14 +5,28 @@ import { readFile, writeFile } from 'fs';
 @Injectable()
 export class FeedInfoService {
   async getCharactersInfo() {
-    let charactersInfo = [];
+    let charactersInfo = await this.getData('https://swapi.dev/api/people');
 
+    this.writeDataToFile('characters', charactersInfo);
+
+    return charactersInfo;
+  }
+
+  async getPlanetsInfo() {
+    let planetsInfo = await this.getData('https://swapi.dev/api/planets');
+
+    this.writeDataToFile('planets', planetsInfo);
+
+    return planetsInfo;
+  }
+
+  private async getData(url: string) {
+    let data = [];
     let stopped = false;
-    let url = 'https://swapi.dev/api/people';
 
     while (!stopped) {
       const response = await axios(url);
-      charactersInfo = [...charactersInfo, response.data.results];
+      data = data.concat(response.data.results);
       if (response.data.next) {
         url = response.data.next;
       } else {
@@ -20,7 +34,11 @@ export class FeedInfoService {
       }
     }
 
-    writeFile(__dirname + '/chars.json', JSON.stringify(charactersInfo), (err) => {
+    return data;
+  }
+
+  private writeDataToFile(filename: string, inputData: any[]) {
+    writeFile(__dirname + `/${filename}.json`, JSON.stringify(inputData), (err) => {
       if (err) {
         console.error(err);
         return;
