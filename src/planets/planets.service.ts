@@ -1,9 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-// Dtos
-import { CreatePlanetDto } from './dto/create-planet.dto';
-import { UpdatePlanetDto } from './dto/update-planet.dto';
 // Entities
 import { Planet } from './entities/planet.entity';
 
@@ -21,9 +18,9 @@ export class PlanetsService {
     return planet;
   }
 
-  async createNewPlanet(data: CreatePlanetDto): Promise<Planet> {
+  async createNewPlanet(attrs: Partial<Planet>): Promise<Planet> {
     const { climate, diameter, gravity, name, orbitalPeriod, population, rotationPeriod, surfaceWater, terrain, url } =
-      data;
+      attrs;
 
     const existingPlanet = await this.planetsRepository.findOne({ name });
     if (existingPlanet) throw new BadRequestException('Planet already exists');
@@ -50,9 +47,9 @@ export class PlanetsService {
     return planet;
   }
 
-  async updatePlanetById(id: number, data: UpdatePlanetDto): Promise<Planet> {
+  async updatePlanetById(id: number, attrs: Partial<Planet>): Promise<Planet> {
     const { climate, diameter, gravity, name, orbitalPeriod, population, rotationPeriod, surfaceWater, terrain, url } =
-      data;
+      attrs;
 
     const planet = await this.planetsRepository.findOne(id);
     if (!planet) throw new NotFoundException('Planet not found for given id');

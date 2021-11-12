@@ -1,9 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-// Dtos
-import { CreateCharacterDto } from './dto/create-character.dto';
-import { UpdateCharacterDto } from './dto/update-character.dto';
 // Entities
 import { Character } from './entities/character.entity';
 
@@ -21,8 +18,8 @@ export class CharactersService {
     return character;
   }
 
-  async createNewCharacter(data: CreateCharacterDto): Promise<Character> {
-    const { birthYear, eyeColor, gender, hairColor, height, homeworld, mass, name, skinColor, url } = data;
+  async createNewCharacter(attrs: Partial<Character>): Promise<Character> {
+    const { birthYear, eyeColor, gender, hairColor, height, homeworld, mass, name, skinColor, url } = attrs;
 
     const existingCharacter = await this.charactersRepository.findOne({ name });
     if (existingCharacter) throw new BadRequestException('Character already exists');
@@ -49,8 +46,8 @@ export class CharactersService {
     return await this.charactersRepository.remove(character);
   }
 
-  async updateCharacterById(id: number, data: UpdateCharacterDto): Promise<Character> {
-    const { birthYear, eyeColor, gender, hairColor, height, homeworld, mass, name, skinColor, url } = data;
+  async updateCharacterById(id: number, attrs: Partial<Character>): Promise<Character> {
+    const { birthYear, eyeColor, gender, hairColor, height, homeworld, mass, name, skinColor, url } = attrs;
 
     const character = await this.charactersRepository.findOne(id);
     if (!character) throw new NotFoundException('Character not found for given id');
