@@ -8,8 +8,8 @@ import { Character } from './entities/character.entity';
 export class CharactersService {
   constructor(@InjectRepository(Character) private charactersRepository: Repository<Character>) {}
 
-  async getAllCharacters(): Promise<Character[]> {
-    return await this.charactersRepository.find();
+  getAllCharacters(): Promise<Character[]> {
+    return this.charactersRepository.find();
   }
 
   async getCharacterById(id: number): Promise<Character> {

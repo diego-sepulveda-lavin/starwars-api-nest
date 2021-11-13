@@ -8,8 +8,8 @@ import { Planet } from './entities/planet.entity';
 export class PlanetsService {
   constructor(@InjectRepository(Planet) private planetsRepository: Repository<Planet>) {}
 
-  async getAllPlanets(): Promise<Planet[]> {
-    return await this.planetsRepository.find();
+  getAllPlanets(): Promise<Planet[]> {
+    return this.planetsRepository.find();
   }
 
   async getPlanetById(id: number): Promise<Planet> {

@@ -9,10 +9,8 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private usersRepository: Repository<User>) {}
 
-  async getAllUsers(): Promise<User[]> {
-    return await this.usersRepository.find({
-      select: ['id', 'email', 'isActive', 'created', 'edited'],
-    });
+  getAllUsers(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
   async getUserById(id: number): Promise<User> {
@@ -55,7 +53,9 @@ export class UsersService {
   async updateUserById(id: number, attrs: Partial<User>): Promise<User> {
     const { email, isActive, password } = attrs;
 
-    const user = await this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne(id, {
+      select: ['id', 'email', 'isActive', 'created', 'edited'],
+    });
     if (!user) throw new NotFoundException('User not found for given id');
 
     const existingUser = await this.usersRepository.findOne({ email });
