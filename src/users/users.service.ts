@@ -14,9 +14,7 @@ export class UsersService {
   }
 
   async getUserById(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne(id, {
-      select: ['id', 'email', 'isActive', 'created', 'edited'],
-    });
+    const user = await this.usersRepository.findOne(id);
     if (!user) throw new NotFoundException('User not found for given id');
     return user;
   }
@@ -35,45 +33,26 @@ export class UsersService {
       password: hashedPassword,
     });
 
-    const savedUser = await this.usersRepository.save(user);
-
-    return await this.usersRepository.findOne(savedUser.id, {
-      select: ['id', 'email', 'isActive', 'created', 'edited'],
-    });
+    return await this.usersRepository.save(user);
   }
 
   async removeUserById(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne(id, {
-      select: ['id', 'email', 'isActive', 'created', 'edited'],
-    });
+    const user = await this.usersRepository.findOne(id);
     if (!user) throw new NotFoundException('User not found for given id');
     return await this.usersRepository.remove(user);
   }
 
   async updateUserById(id: number, attrs: Partial<User>): Promise<User> {
-    const { email, isActive, password } = attrs;
-
-    const user = await this.usersRepository.findOne(id, {
-      select: ['id', 'email', 'isActive', 'created', 'edited'],
-    });
+    const user = await this.usersRepository.findOne(id);
     if (!user) throw new NotFoundException('User not found for given id');
 
-    const existingUser = await this.usersRepository.findOne({ email });
-    if (existingUser && existingUser.id !== id) {
-      throw new BadRequestException('Email already in use');
-    }
+    const { isActive, password } = attrs;
 
     const salt = await genSalt();
     const hashedPassword = await hash(String(password), salt);
 
-    await this.usersRepository.update(id, {
-      email,
-      isActive,
-      password: hashedPassword,
-    });
-
-    return await this.usersRepository.findOne(id, {
-      select: ['id', 'email', 'isActive', 'created', 'edited'],
-    });
+    user.isActive = isActive;
+    user.password = hashedPassword;
+    return this.usersRepository.save(user);
   }
 }
