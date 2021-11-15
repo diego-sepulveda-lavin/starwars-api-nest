@@ -24,14 +24,6 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-  @Get(':id')
-  @Serialize(UserDto)
-  @ApiResponse({ status: 200, description: 'Returns a specific user for given id' })
-  @ApiResponse({ status: 404, description: 'User not found for given id' })
-  getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.usersService.getUserById(id);
-  }
-
   @Post()
   @Serialize(UserDto)
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
@@ -40,12 +32,12 @@ export class UsersController {
     return this.usersService.createNewUser(createUserDto);
   }
 
-  @Delete(':id')
+  @Get(':id')
   @Serialize(UserDto)
-  @ApiResponse({ status: 200, description: 'Returns deleted user for given id' })
+  @ApiResponse({ status: 200, description: 'Returns a specific user for given id' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
-  removeUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.usersService.removeUserById(id);
+  getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.usersService.getUserById(id);
   }
 
   @Put(':id')
@@ -55,5 +47,13 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User not found for given id' })
   updateUserById(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.usersService.updateUserById(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  @Serialize(UserDto)
+  @ApiResponse({ status: 200, description: 'Returns deleted user for given id' })
+  @ApiResponse({ status: 404, description: 'User not found for given id' })
+  removeUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.usersService.removeUserById(id);
   }
 }

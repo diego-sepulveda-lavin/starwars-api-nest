@@ -12,12 +12,6 @@ export class CharactersService {
     return this.charactersRepository.find();
   }
 
-  async getCharacterById(id: number): Promise<Character> {
-    const character = await this.charactersRepository.findOne(id);
-    if (!character) throw new NotFoundException('Character not found for given id');
-    return character;
-  }
-
   async createNewCharacter(attrs: Partial<Character>): Promise<Character> {
     const { birthYear, eyeColor, gender, hairColor, height, homeworld, mass, name, skinColor, url } = attrs;
 
@@ -40,10 +34,10 @@ export class CharactersService {
     return await this.charactersRepository.save(character);
   }
 
-  async removeCharacterById(id: number): Promise<Character> {
+  async getCharacterById(id: number): Promise<Character> {
     const character = await this.charactersRepository.findOne(id);
     if (!character) throw new NotFoundException('Character not found for given id');
-    return await this.charactersRepository.remove(character);
+    return character;
   }
 
   async updateCharacterById(id: number, attrs: Partial<Character>): Promise<Character> {
@@ -57,19 +51,23 @@ export class CharactersService {
       throw new BadRequestException('Character name already exists');
     }
 
-    await this.charactersRepository.update(id, {
-      birthYear,
-      eyeColor,
-      gender,
-      hairColor,
-      height,
-      homeworld,
-      mass,
-      name,
-      skinColor,
-      url,
-    });
+    character.birthYear = birthYear;
+    character.eyeColor = eyeColor;
+    character.gender = gender;
+    character.hairColor = hairColor;
+    character.height = height;
+    character.homeworld = homeworld;
+    character.mass = mass;
+    character.name = name;
+    character.skinColor = skinColor;
+    character.url = url;
 
-    return await this.charactersRepository.findOne(id);
+    return await this.charactersRepository.findOne(character);
+  }
+
+  async removeCharacterById(id: number): Promise<Character> {
+    const character = await this.charactersRepository.findOne(id);
+    if (!character) throw new NotFoundException('Character not found for given id');
+    return await this.charactersRepository.remove(character);
   }
 }

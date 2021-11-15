@@ -13,12 +13,6 @@ export class UsersService {
     return this.usersRepository.find();
   }
 
-  async getUserById(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne(id);
-    if (!user) throw new NotFoundException('User not found for given id');
-    return user;
-  }
-
   async createNewUser(attrs: Partial<User>): Promise<User> {
     const { email, password, isActive } = attrs;
 
@@ -36,10 +30,10 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
-  async removeUserById(id: number): Promise<User> {
+  async getUserById(id: number): Promise<User> {
     const user = await this.usersRepository.findOne(id);
     if (!user) throw new NotFoundException('User not found for given id');
-    return await this.usersRepository.remove(user);
+    return user;
   }
 
   async updateUserById(id: number, attrs: Partial<User>): Promise<User> {
@@ -54,5 +48,11 @@ export class UsersService {
     user.isActive = isActive;
     user.password = hashedPassword;
     return this.usersRepository.save(user);
+  }
+
+  async removeUserById(id: number): Promise<User> {
+    const user = await this.usersRepository.findOne(id);
+    if (!user) throw new NotFoundException('User not found for given id');
+    return await this.usersRepository.remove(user);
   }
 }

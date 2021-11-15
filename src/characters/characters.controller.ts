@@ -20,25 +20,17 @@ export class CharactersController {
     return this.charactersService.getAllCharacters();
   }
 
-  @Get(':id')
-  @ApiResponse({ status: 200, description: 'Returns a specific character for given id' })
-  @ApiResponse({ status: 404, description: 'Character not found for given id' })
-  getCharacterById(@Param('id', ParseIntPipe) id: number): Promise<Character> {
-    return this.charactersService.getCharacterById(id);
-  }
-
   @Post()
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing or character already exists' })
   createNewCharacter(@Body() createCharacterDto: CreateCharacterDto): Promise<Character> {
     return this.charactersService.createNewCharacter(createCharacterDto);
   }
-
-  @Delete(':id')
-  @ApiResponse({ status: 200, description: 'Returns deleted character for given id' })
+  @Get(':id')
+  @ApiResponse({ status: 200, description: 'Returns a specific character for given id' })
   @ApiResponse({ status: 404, description: 'Character not found for given id' })
-  removeCharacterById(@Param('id', ParseIntPipe) id: number): Promise<Character> {
-    return this.charactersService.removeCharacterById(id);
+  getCharacterById(@Param('id', ParseIntPipe) id: number): Promise<Character> {
+    return this.charactersService.getCharacterById(id);
   }
 
   @Put(':id')
@@ -50,5 +42,12 @@ export class CharactersController {
     @Body() updateCharacterDto: UpdateCharacterDto,
   ): Promise<Character> {
     return this.charactersService.updateCharacterById(id, updateCharacterDto);
+  }
+
+  @Delete(':id')
+  @ApiResponse({ status: 200, description: 'Returns deleted character for given id' })
+  @ApiResponse({ status: 404, description: 'Character not found for given id' })
+  removeCharacterById(@Param('id', ParseIntPipe) id: number): Promise<Character> {
+    return this.charactersService.removeCharacterById(id);
   }
 }

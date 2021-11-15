@@ -12,12 +12,6 @@ export class PlanetsService {
     return this.planetsRepository.find();
   }
 
-  async getPlanetById(id: number): Promise<Planet> {
-    const planet = await this.planetsRepository.findOne(id);
-    if (!planet) throw new NotFoundException('Planet not found for given id');
-    return planet;
-  }
-
   async createNewPlanet(attrs: Partial<Planet>): Promise<Planet> {
     const { climate, diameter, gravity, name, orbitalPeriod, population, rotationPeriod, surfaceWater, terrain, url } =
       attrs;
@@ -41,7 +35,7 @@ export class PlanetsService {
     return await this.planetsRepository.save(user);
   }
 
-  async removePlanetById(id: number): Promise<Planet> {
+  async getPlanetById(id: number): Promise<Planet> {
     const planet = await this.planetsRepository.findOne(id);
     if (!planet) throw new NotFoundException('Planet not found for given id');
     return planet;
@@ -59,19 +53,23 @@ export class PlanetsService {
       throw new BadRequestException('Planet name already exists');
     }
 
-    await this.planetsRepository.update(id, {
-      climate,
-      diameter,
-      gravity,
-      name,
-      orbitalPeriod,
-      population,
-      rotationPeriod,
-      surfaceWater,
-      terrain,
-      url,
-    });
+    planet.climate = climate;
+    planet.diameter = diameter;
+    planet.gravity = gravity;
+    planet.name = name;
+    planet.orbitalPeriod = orbitalPeriod;
+    planet.population = population;
+    planet.rotationPeriod = rotationPeriod;
+    planet.surfaceWater = surfaceWater;
+    planet.terrain = terrain;
+    planet.url = url;
 
-    return await this.planetsRepository.findOne(id);
+    return await this.planetsRepository.save(planet);
+  }
+
+  async removePlanetById(id: number): Promise<Planet> {
+    const planet = await this.planetsRepository.findOne(id);
+    if (!planet) throw new NotFoundException('Planet not found for given id');
+    return planet;
   }
 }
