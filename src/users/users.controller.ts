@@ -9,27 +9,33 @@ import { UserDto } from './dtos/user.dto';
 import { User } from './entities/user.entity';
 // Services
 import { UsersService } from './users.service';
+import { AuthService } from './auth.service';
 // Interceptors
 import { Serialize } from '../interceptors/serialize.interceptor';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
+
+  @Post('sign-up')
+  @Serialize(UserDto)
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
+  @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
+  signUp(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.authService.signUp(createUserDto);
+  }
+
+  @Post('sign-in')
+  signIn() {
+    return this.authService.signIn();
+  }
 
   @Get()
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'Returns a list with all users' })
   getAllUsers(): Promise<User[]> {
     return this.usersService.getAllUsers();
-  }
-
-  @Post()
-  @Serialize(UserDto)
-  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
-  @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
-  createNewUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.createNewUser(createUserDto);
   }
 
   @Get(':id')
