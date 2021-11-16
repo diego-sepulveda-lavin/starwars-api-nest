@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 
 // Entities
 import { User } from './entities/user.entity';
@@ -11,13 +11,22 @@ export class AuthService {
 
   async signUp(attrs: Partial<User>): Promise<User> {
     const { email, password, isActive } = attrs;
+
     const user = await this.usersService.getUserByEmail(email);
     if (user) throw new BadRequestException('Email already in use');
 
     return await this.usersService.createNewUser(email, password, isActive);
   }
 
-  signIn() {
-    return 'SignIn';
+  async signIn(attrs: Partial<User>) {
+    const { email, password } = attrs;
+
+    const user = await this.usersService.getUserByEmail(email);
+    if (!user) throw new UnauthorizedException('Incorrect email or password');
+
+    const correctPassword = await this.usersService.checkPassword(password, user.password);
+    if (!correctPassword) throw new UnauthorizedException('Incorrect email or password');
+
+    return 'Succesful';
   }
 }

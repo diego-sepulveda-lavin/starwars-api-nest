@@ -4,6 +4,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 // Dtos
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { SignInUserDto } from './dtos/sign-in-user.dto';
 import { UserDto } from './dtos/user.dto';
 // Entities
 import { User } from './entities/user.entity';
@@ -27,8 +28,8 @@ export class UsersController {
   }
 
   @Post('sign-in')
-  signIn() {
-    return this.authService.signIn();
+  signIn(@Body() signInUserDto: SignInUserDto) {
+    return this.authService.signIn(signInUserDto);
   }
 
   @Get()
