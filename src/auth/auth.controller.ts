@@ -1,4 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
@@ -11,9 +12,10 @@ import { User } from '../users/entities/user.entity';
 import { Serialize } from '../interceptors/serialize.interceptor';
 // Services
 import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('auth')
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -25,8 +27,10 @@ export class AuthController {
     return this.authService.register(registerUserDto);
   }
 
-  @Post('login')
-  login(@Body() loginUserDto: LoginUserDto) {
-    return this.authService.login(loginUserDto);
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  @Serialize(UserDto)
+  async login(@Request() req, @Body() loginUserDto: LoginUserDto) {
+    return 'caca';
   }
 }
