@@ -28,9 +28,8 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  @Serialize(UserDto)
+  @Post('login')
   async login(@Request() req, @Body() loginUserDto: LoginUserDto) {
-    return 'caca';
+    return this.authService.login(req.user);
   }
 }
