@@ -2,12 +2,8 @@ import { CallHandler, ExecutionContext, NestInterceptor, UseInterceptors } from 
 import { map, Observable } from 'rxjs';
 import { plainToClass } from 'class-transformer';
 
-interface ClassContructor {
-  new (...args: any[]): {};
-}
-
 // Custom decorator
-export function Serialize(dto: ClassContructor) {
+export function Serialize(dto) {
   return UseInterceptors(new SerializeInterceptor(dto));
 }
 

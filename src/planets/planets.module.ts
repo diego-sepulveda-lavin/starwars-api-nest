@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// Entities
-import { Planet } from './entities/planet.entity';
 // Controllers
 import { PlanetsController } from './planets.controller';
+// Entities
+import { Planet } from './entities/planet.entity';
 // Services
 import { PlanetsService } from './planets.service';
 

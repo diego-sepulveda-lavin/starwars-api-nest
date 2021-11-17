@@ -1,36 +1,20 @@
-import { Controller, Body, Param, Delete, Get, Post, Put, ParseIntPipe } from '@nestjs/common';
+import { Controller, Body, Param, Delete, Get, Put, ParseIntPipe } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
-import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { SignInUserDto } from './dtos/sign-in-user.dto';
 import { UserDto } from './dtos/user.dto';
 // Entities
 import { User } from './entities/user.entity';
-// Services
-import { UsersService } from './users.service';
-import { AuthService } from './auth.service';
 // Interceptors
 import { Serialize } from '../interceptors/serialize.interceptor';
+// Services
+import { UsersService } from './users.service';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService, private readonly authService: AuthService) {}
-
-  @Post('sign-up')
-  @Serialize(UserDto)
-  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
-  @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
-  signUp(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.authService.signUp(createUserDto);
-  }
-
-  @Post('sign-in')
-  signIn(@Body() signInUserDto: SignInUserDto) {
-    return this.authService.signIn(signInUserDto);
-  }
+  constructor(private readonly usersService: UsersService) {}
 
   @Get()
   @Serialize(UserDto)

@@ -3,9 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Entities
-import { Character } from 'src/characters/entities/character.entity';
-import { Planet } from 'src/planets/entities/planet.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Character } from '../characters/entities/character.entity';
+import { Planet } from '../planets/entities/planet.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [

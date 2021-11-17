@@ -8,6 +8,7 @@ import {
   JoinTable,
 } from 'typeorm';
 
+// Entities
 import { User } from '../../users/entities/user.entity';
 
 @Entity()

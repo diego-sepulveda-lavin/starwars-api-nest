@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
 
+// Entities
 import { Character } from '../../characters/entities/character.entity';
 import { Planet } from '../../planets/entities/planet.entity';
 

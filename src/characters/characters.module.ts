@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-// Entities
-import { Character } from './entities/character.entity';
 // Controllers
 import { CharactersController } from './characters.controller';
+// Entities
+import { Character } from './entities/character.entity';
 // Services
 import { CharactersService } from './characters.service';
 

@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 
 // Entities
-import { User } from './entities/user.entity';
+import { User } from '../users/entities/user.entity';
 // Services
-import { UsersService } from './users.service';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly usersService: UsersService) {}
 
-  async signUp(attrs: Partial<User>): Promise<User> {
+  async register(attrs: Partial<User>): Promise<User> {
     const { email, password, isActive } = attrs;
 
     const user = await this.usersService.getUserByEmail(email);
@@ -18,7 +18,7 @@ export class AuthService {
     return await this.usersService.createNewUser(email, password, isActive);
   }
 
-  async signIn(attrs: Partial<User>) {
+  async login(attrs: Partial<User>) {
     const { email, password } = attrs;
 
     const user = await this.usersService.getUserByEmail(email);

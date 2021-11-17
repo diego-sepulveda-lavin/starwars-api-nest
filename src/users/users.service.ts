@@ -1,12 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { compare, genSalt, hash } from 'bcrypt';
 
 // Entities
 import { User } from './entities/user.entity';
-// Services
-import { AuthService } from './auth.service';
-import { compare, genSalt, hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
