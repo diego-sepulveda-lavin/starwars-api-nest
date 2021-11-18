@@ -1,4 +1,4 @@
-import { Controller, Body, Param, Delete, Get, Put, ParseIntPipe } from '@nestjs/common';
+import { Controller, Body, Param, Delete, Get, Put, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
@@ -6,6 +6,8 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 // Entities
 import { User } from './entities/user.entity';
+// Guards
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 // Interceptors
 import { Serialize } from '../interceptors/serialize.interceptor';
 // Services
@@ -17,13 +19,17 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'Returns a list with all users' })
-  getAllUsers(): Promise<User[]> {
+  getAllUsers(@Request() req): Promise<User[]> {
+    console.log(req.user);
+
     return this.usersService.getAllUsers();
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'Returns a specific user for given id' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
@@ -32,6 +38,7 @@ export class UsersController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
@@ -41,6 +48,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'Returns deleted user for given id' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })

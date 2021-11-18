@@ -63,7 +63,7 @@ export class CharactersService {
     character.skinColor = skinColor;
     character.url = url;
 
-    return await this.charactersRepository.findOne(character);
+    return await this.charactersRepository.save(character);
   }
 
   async removeCharacterById(id: number): Promise<Character> {
