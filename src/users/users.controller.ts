@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, Put, Body, Param, Request, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -21,6 +21,7 @@ export class UsersController {
   @Get()
   @UseGuards(JwtAuthGuard)
   @Serialize(UserAdminDto)
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Returns a list with all users', type: UserAdminDto })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
   getAllUsers(@Request() req): Promise<User[]> {
@@ -30,6 +31,7 @@ export class UsersController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   @Serialize(UserAdminDto)
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Returns a specific user for given id', type: UserAdminDto })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
@@ -40,6 +42,7 @@ export class UsersController {
   @Put(':id')
   @UseGuards(JwtAuthGuard)
   @Serialize(UserAdminDto)
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.', type: UserAdminDto })
   @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
@@ -55,6 +58,7 @@ export class UsersController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @Serialize(UserAdminDto)
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Returns deleted user for given id', type: UserAdminDto })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })

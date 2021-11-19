@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
 import { CreateCharacterDto } from './dtos/create-character.dto';
@@ -25,6 +25,7 @@ export class CharactersController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 201, description: 'The record has been successfully created.', type: CharacterDto })
   @ApiResponse({ status: 400, description: 'Some fields are missing or character already exists' })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
@@ -41,6 +42,7 @@ export class CharactersController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.', type: CharacterDto })
   @ApiResponse({ status: 400, description: 'Some fields are missing or character already exists' })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
@@ -55,6 +57,7 @@ export class CharactersController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: 'Returns deleted character for given id', type: CharacterDto })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
   @ApiResponse({ status: 404, description: 'Character not found for given id' })

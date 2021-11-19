@@ -1,5 +1,5 @@
 import { Controller, Delete, Get, Param, ParseIntPipe, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Entities
 import { User } from '../users/entities/user.entity';
@@ -16,6 +16,7 @@ export class FavoritesController {
 
   @Post('character/:characterId')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 201, description: "Returns a user with user's favorites", type: UserFavoritesDto })
   @ApiResponse({ status: 400, description: "Character already in user's favorites" })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
@@ -26,6 +27,7 @@ export class FavoritesController {
 
   @Post('planet/:planetId')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 201, description: "Returns a user with user's favorites", type: UserFavoritesDto })
   @ApiResponse({ status: 400, description: "Planet already in user's favorites" })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
@@ -36,6 +38,7 @@ export class FavoritesController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 200, description: "Returns a user with user's favorites", type: UserFavoritesDto })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
   getUserFavorites(@Request() req): Promise<User> {
@@ -44,6 +47,7 @@ export class FavoritesController {
 
   @Delete('character/:characterId')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 201, description: "Returns a user with user's favorites", type: UserFavoritesDto })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
   @ApiResponse({ status: 404, description: 'Character id not found' })
@@ -53,6 +57,7 @@ export class FavoritesController {
 
   @Delete('planet/:planetId')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @ApiResponse({ status: 201, description: "Returns a user with user's favorites", type: UserFavoritesDto })
   @ApiResponse({ status: 401, description: 'You are not authorized' })
   @ApiResponse({ status: 404, description: 'Planet id not found' })
