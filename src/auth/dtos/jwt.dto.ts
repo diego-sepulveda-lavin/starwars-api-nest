@@ -1,12 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class UserDto {
+export class JwtDto {
   @ApiProperty()
   @Expose()
-  id: number;
-
-  @ApiProperty()
-  @Expose()
-  email: string;
+  access_token: string;
 }

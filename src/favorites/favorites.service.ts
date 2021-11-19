@@ -17,7 +17,7 @@ export class FavoritesService {
     private readonly planetService: PlanetsService,
   ) {}
 
-  async getUserFavorites(requestingUserId: number) {
+  async getUserFavorites(requestingUserId: number): Promise<User> {
     const userWithFavorites = await this.usersRepository.findOne(requestingUserId, {
       select: ['email', 'id'],
       relations: ['favoriteCharacters', 'favoritePlanets'],
@@ -25,7 +25,7 @@ export class FavoritesService {
     return userWithFavorites;
   }
 
-  async addNewFavoriteCharacter(requestingUserId: number, characterId: number) {
+  async addNewFavoriteCharacter(requestingUserId: number, characterId: number): Promise<User> {
     const user = await this.getUserFavorites(requestingUserId);
     const character = await this.characterService.getCharacterById(characterId);
 
@@ -36,7 +36,7 @@ export class FavoritesService {
     return this.usersRepository.save(user);
   }
 
-  async addNewFavoritePlanet(requestingUserId: number, planetId: number) {
+  async addNewFavoritePlanet(requestingUserId: number, planetId: number): Promise<User> {
     const user = await this.getUserFavorites(requestingUserId);
     const planet = await this.planetService.getPlanetById(planetId);
 
@@ -47,7 +47,7 @@ export class FavoritesService {
     return this.usersRepository.save(user);
   }
 
-  async deleteFavoriteCharacter(requestingUserId: number, characterId: number) {
+  async deleteFavoriteCharacter(requestingUserId: number, characterId: number): Promise<User> {
     const user = await this.getUserFavorites(requestingUserId);
     await this.characterService.getCharacterById(characterId);
 
@@ -56,7 +56,7 @@ export class FavoritesService {
     return this.usersRepository.save(user);
   }
 
-  async deleteFavoritePlanet(requestingUserId: number, planetId: number) {
+  async deleteFavoritePlanet(requestingUserId: number, planetId: number): Promise<User> {
     const user = await this.getUserFavorites(requestingUserId);
     await this.planetService.getPlanetById(planetId);
 

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
-export class UserDto {
+export class UserFavoritesDto {
   @ApiProperty()
   @Expose()
   id: number;
@@ -9,4 +9,12 @@ export class UserDto {
   @ApiProperty()
   @Expose()
   email: string;
+
+  @ApiProperty()
+  @Expose()
+  favoriteCharacters: [];
+
+  @ApiProperty()
+  @Expose()
+  favoritePlanets: [];
 }

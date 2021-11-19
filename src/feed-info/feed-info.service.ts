@@ -4,35 +4,14 @@ import axios from 'axios';
 import { writeFile } from 'fs/promises';
 import { Repository } from 'typeorm';
 
+// Dtos
+import { FeedCharacter } from './dtos/feed-character.dto';
+import { FeedPlanet } from './dtos/feed-planet.dto';
 // Entities
 import { Character } from '../characters/entities/character.entity';
 import { Planet } from '../planets/entities/planet.entity';
+// Services
 import { UsersService } from '../users/users.service';
-
-interface FeedCharacter {
-  name: string;
-  height: string;
-  mass: string;
-  hair_color: string;
-  skin_color: string;
-  eye_color: string;
-  birth_year: string;
-  gender: string;
-  homeworld: string;
-  url: string;
-}
-interface FeedPlanet {
-  name: string;
-  rotation_period: string;
-  orbital_period: string;
-  diameter: string;
-  climate: string;
-  gravity: string;
-  terrain: string;
-  surface_water: string;
-  population: string;
-  url: string;
-}
 @Injectable()
 export class FeedInfoService {
   constructor(

@@ -12,6 +12,7 @@ import { Serialize } from '../interceptors/serialize.interceptor';
 // Services
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
+import { JwtDto } from './dtos/jwt.dto';
 
 @ApiTags('auth')
 @Controller()
@@ -20,15 +21,17 @@ export class AuthController {
 
   @Post('register')
   @Serialize(UserDto)
-  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.', type: UserDto })
   @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
   register(@Body() registerUserDto: RegisterUserDto): Promise<User> {
     return this.authService.register(registerUserDto);
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req, @Body() loginUserDto: LoginUserDto) {
+  @UseGuards(LocalAuthGuard)
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.', type: JwtDto })
+  @ApiResponse({ status: 401, description: 'Incorrect email or password' })
+  async login(@Request() req, @Body() loginUserDto: LoginUserDto): Promise<JwtDto> {
     return this.authService.login(req.user);
   }
 }
