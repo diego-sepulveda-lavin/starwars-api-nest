@@ -1,4 +1,4 @@
-import { Controller, Body, Param, Delete, Get, Put, ParseIntPipe, UseGuards, Request } from '@nestjs/common';
+import { Controller, Delete, Get, Put, Body, Param, Request, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
@@ -58,14 +58,3 @@ export class UsersController {
     return this.usersService.removeUserById(id, req.user.userId);
   }
 }
-
-// POST
-// /favorites/user/:id/planet/:id
-// /favorites/user/:id/character/:id
-
-// GET
-// /favorites/user/:id
-
-// DELETE
-// /favorites/user/:id/planet/:id
-// /favorites/user/:id/character/:id

@@ -56,7 +56,7 @@ export class Planet {
     onDelete: 'CASCADE',
   })
   @JoinTable({
-    name: 'favourite_planet',
+    name: 'favorite_planet',
     joinColumn: {
       name: 'planet_id',
       referencedColumnName: 'id',

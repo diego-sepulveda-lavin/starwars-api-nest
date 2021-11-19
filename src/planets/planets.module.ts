@@ -14,5 +14,6 @@ import { PlanetsService } from './planets.service';
   imports: [TypeOrmModule.forFeature([Planet]), UsersModule],
   controllers: [PlanetsController],
   providers: [PlanetsService],
+  exports: [PlanetsService],
 })
 export class PlanetsModule {}

@@ -56,7 +56,7 @@ export class Character {
     onDelete: 'CASCADE',
   })
   @JoinTable({
-    name: 'favourite_character',
+    name: 'favorite_character',
     joinColumn: {
       name: 'character_id',
       referencedColumnName: 'id',
