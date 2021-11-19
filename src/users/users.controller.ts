@@ -23,9 +23,7 @@ export class UsersController {
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'Returns a list with all users' })
   getAllUsers(@Request() req): Promise<User[]> {
-    console.log(req.user);
-
-    return this.usersService.getAllUsers();
+    return this.usersService.getAllUsers(req.user.userId);
   }
 
   @Get(':id')
@@ -33,8 +31,8 @@ export class UsersController {
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'Returns a specific user for given id' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
-  getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.usersService.getUserById(id);
+  getUserById(@Request() req, @Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.usersService.getUserById(id, req.user.userId);
   }
 
   @Put(':id')
@@ -43,8 +41,12 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing or email already in use' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
-  updateUserById(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto): Promise<User> {
-    return this.usersService.updateUserById(id, updateUserDto);
+  updateUserById(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<User> {
+    return this.usersService.updateUserById(id, req.user.userId, updateUserDto);
   }
 
   @Delete(':id')
@@ -52,7 +54,18 @@ export class UsersController {
   @Serialize(UserDto)
   @ApiResponse({ status: 200, description: 'Returns deleted user for given id' })
   @ApiResponse({ status: 404, description: 'User not found for given id' })
-  removeUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    return this.usersService.removeUserById(id);
+  removeUserById(@Request() req, @Param('id', ParseIntPipe) id: number): Promise<User> {
+    return this.usersService.removeUserById(id, req.user.userId);
   }
 }
+
+// POST
+// /favorites/user/:id/planet/:id
+// /favorites/user/:id/character/:id
+
+// GET
+// /favorites/user/:id
+
+// DELETE
+// /favorites/user/:id/planet/:id
+// /favorites/user/:id/character/:id

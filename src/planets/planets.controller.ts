@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Request, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos
@@ -17,7 +17,6 @@ export class PlanetsController {
   constructor(private readonly planetsService: PlanetsService) {}
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Returns a list with all planets' })
   getAllPlanets(): Promise<Planet[]> {
     return this.planetsService.getAllPlanets();
@@ -27,12 +26,11 @@ export class PlanetsController {
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing or planet already exists' })
-  createNewPlanet(@Body() createPlanetDto: CreatePlanetDto): Promise<Planet> {
-    return this.planetsService.createNewPlanet(createPlanetDto);
+  createNewPlanet(@Request() req, @Body() createPlanetDto: CreatePlanetDto): Promise<Planet> {
+    return this.planetsService.createNewPlanet(req.user.userId, createPlanetDto);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Returns a specific planet for given id' })
   @ApiResponse({ status: 404, description: 'Planet not found for given id' })
   getPlanetById(@Param('id', ParseIntPipe) id: number): Promise<Planet> {
@@ -44,15 +42,19 @@ export class PlanetsController {
   @ApiResponse({ status: 200, description: 'The record has been successfully modified.' })
   @ApiResponse({ status: 400, description: 'Some fields are missing or planet already exists' })
   @ApiResponse({ status: 404, description: 'Planet not found for given id' })
-  updatePlanetById(@Param('id', ParseIntPipe) id: number, @Body() updatePlanetDto: UpdatePlanetDto): Promise<Planet> {
-    return this.planetsService.updatePlanetById(id, updatePlanetDto);
+  updatePlanetById(
+    @Request() req,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePlanetDto: UpdatePlanetDto,
+  ): Promise<Planet> {
+    return this.planetsService.updatePlanetById(req.user.userId, id, updatePlanetDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   @ApiResponse({ status: 200, description: 'Returns deleted planet for given id' })
   @ApiResponse({ status: 404, description: 'Planet not found for given id' })
-  removePlanetById(@Param('id', ParseIntPipe) id: number): Promise<Planet> {
-    return this.planetsService.removePlanetById(id);
+  removePlanetById(@Request() req, @Param('id', ParseIntPipe) id: number): Promise<Planet> {
+    return this.planetsService.removePlanetById(req.user.userId, id);
   }
 }

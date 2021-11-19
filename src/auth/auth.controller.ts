@@ -1,5 +1,4 @@
 import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Dtos

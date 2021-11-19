@@ -4,16 +4,22 @@ import { Repository } from 'typeorm';
 
 // Entities
 import { Character } from './entities/character.entity';
+// Services
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class CharactersService {
-  constructor(@InjectRepository(Character) private charactersRepository: Repository<Character>) {}
+  constructor(
+    @InjectRepository(Character) private charactersRepository: Repository<Character>,
+    private readonly usersService: UsersService,
+  ) {}
 
   getAllCharacters(): Promise<Character[]> {
     return this.charactersRepository.find();
   }
 
-  async createNewCharacter(attrs: Partial<Character>): Promise<Character> {
+  async createNewCharacter(requestingUserId: number, attrs: Partial<Character>): Promise<Character> {
+    await this.usersService.checkAdmin(requestingUserId);
     const { birthYear, eyeColor, gender, hairColor, height, homeworld, mass, name, skinColor, url } = attrs;
 
     const existingCharacter = await this.charactersRepository.findOne({ name });
@@ -41,7 +47,8 @@ export class CharactersService {
     return character;
   }
 
-  async updateCharacterById(id: number, attrs: Partial<Character>): Promise<Character> {
+  async updateCharacterById(requestingUserId: number, id: number, attrs: Partial<Character>): Promise<Character> {
+    await this.usersService.checkAdmin(requestingUserId);
     const { birthYear, eyeColor, gender, hairColor, height, homeworld, mass, name, skinColor, url } = attrs;
 
     const character = await this.charactersRepository.findOne(id);
@@ -66,7 +73,9 @@ export class CharactersService {
     return await this.charactersRepository.save(character);
   }
 
-  async removeCharacterById(id: number): Promise<Character> {
+  async removeCharacterById(requestingUserId: number, id: number): Promise<Character> {
+    await this.usersService.checkAdmin(requestingUserId);
+
     const character = await this.charactersRepository.findOne(id);
     if (!character) throw new NotFoundException('Character not found for given id');
     return await this.charactersRepository.remove(character);

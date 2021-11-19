@@ -5,8 +5,9 @@ import { writeFile } from 'fs/promises';
 import { Repository } from 'typeorm';
 
 // Entities
-import { Character } from 'src/characters/entities/character.entity';
-import { Planet } from 'src/planets/entities/planet.entity';
+import { Character } from '../characters/entities/character.entity';
+import { Planet } from '../planets/entities/planet.entity';
+import { UsersService } from '../users/users.service';
 
 interface FeedCharacter {
   name: string;
@@ -37,9 +38,12 @@ export class FeedInfoService {
   constructor(
     @InjectRepository(Character) private charactersRepository: Repository<Character>,
     @InjectRepository(Planet) private planetsRepository: Repository<Planet>,
+    private readonly usersService: UsersService,
   ) {}
 
-  async getCharactersInfo() {
+  async getCharactersInfo(requestingUserId: number) {
+    await this.usersService.checkAdmin(requestingUserId);
+
     const charactersData: FeedCharacter[] = await this.getData('https://swapi.dev/api/people');
 
     this.writeDataToFile('characters.json', charactersData);
@@ -65,7 +69,9 @@ export class FeedInfoService {
     return { message: 'Characters data loaded succesfully in the db!' };
   }
 
-  async getPlanetsInfo() {
+  async getPlanetsInfo(requestingUserId: number) {
+    await this.usersService.checkAdmin(requestingUserId);
+
     const planetsData: FeedPlanet[] = await this.getData('https://swapi.dev/api/planets');
 
     this.writeDataToFile('planets.json', planetsData);

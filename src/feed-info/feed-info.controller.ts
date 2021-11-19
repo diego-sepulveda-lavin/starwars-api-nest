@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 // Guards
@@ -13,13 +13,13 @@ export class FeedInfoController {
 
   @Get('characters')
   @UseGuards(JwtAuthGuard)
-  getCharactersInfo() {
-    return this.feedInfoService.getCharactersInfo();
+  getCharactersInfo(@Request() req) {
+    return this.feedInfoService.getCharactersInfo(req.user.userId);
   }
 
   @Get('planets')
   @UseGuards(JwtAuthGuard)
-  getPlanetsInfo() {
-    return this.feedInfoService.getPlanetsInfo();
+  getPlanetsInfo(@Request() req) {
+    return this.feedInfoService.getPlanetsInfo(req.user.userId);
   }
 }

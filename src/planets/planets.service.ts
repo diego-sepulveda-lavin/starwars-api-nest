@@ -4,16 +4,22 @@ import { Repository } from 'typeorm';
 
 // Entities
 import { Planet } from './entities/planet.entity';
+// Services
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class PlanetsService {
-  constructor(@InjectRepository(Planet) private planetsRepository: Repository<Planet>) {}
+  constructor(
+    @InjectRepository(Planet) private planetsRepository: Repository<Planet>,
+    private readonly usersService: UsersService,
+  ) {}
 
   getAllPlanets(): Promise<Planet[]> {
     return this.planetsRepository.find();
   }
 
-  async createNewPlanet(attrs: Partial<Planet>): Promise<Planet> {
+  async createNewPlanet(requestingUserId: number, attrs: Partial<Planet>): Promise<Planet> {
+    await this.usersService.checkAdmin(requestingUserId);
     const { climate, diameter, gravity, name, orbitalPeriod, population, rotationPeriod, surfaceWater, terrain, url } =
       attrs;
 
@@ -42,7 +48,8 @@ export class PlanetsService {
     return planet;
   }
 
-  async updatePlanetById(id: number, attrs: Partial<Planet>): Promise<Planet> {
+  async updatePlanetById(requestingUserId: number, id: number, attrs: Partial<Planet>): Promise<Planet> {
+    await this.usersService.checkAdmin(requestingUserId);
     const { climate, diameter, gravity, name, orbitalPeriod, population, rotationPeriod, surfaceWater, terrain, url } =
       attrs;
 
@@ -68,7 +75,9 @@ export class PlanetsService {
     return await this.planetsRepository.save(planet);
   }
 
-  async removePlanetById(id: number): Promise<Planet> {
+  async removePlanetById(requestingUserId: number, id: number): Promise<Planet> {
+    await this.usersService.checkAdmin(requestingUserId);
+
     const planet = await this.planetsRepository.findOne(id);
     if (!planet) throw new NotFoundException('Planet not found for given id');
     return planet;
