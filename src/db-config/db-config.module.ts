@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Entities
@@ -9,20 +9,22 @@ import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        database: process.env.DB_NAME,
-        entities: [Character, Planet, User],
-        host: process.env.DB_HOST,
-        password: process.env.DB_PASSWORD,
-        port: parseInt(process.env.DB_PORT, 10),
-        type: 'mysql',
-        synchronize: true, // change when ready
-        username: process.env.DB_USERNAME,
-        logging: 'all',
-        dropSchema: false,
-      }),
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          database: config.get<string>('DB_NAME'),
+          entities: [Character, Planet, User],
+          host: config.get<string>('DB_HOST'),
+          password: config.get<string>('DB_PASSWORD'),
+          port: parseInt(config.get<string>('DB_PORT'), 10),
+          type: 'mysql',
+          synchronize: true, // change when ready
+          username: config.get<string>('DB_USERNAME'),
+          logging: 'all',
+          dropSchema: false,
+        };
+      },
     }),
   ],
 })

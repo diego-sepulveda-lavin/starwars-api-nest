@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 // Modules
 import { AuthModule } from '../auth/auth.module';
@@ -9,6 +10,18 @@ import { FeedInfoModule } from '../feed-info/feed-info.module';
 import { PlanetsModule } from '../planets/planets.module';
 import { UsersModule } from '../users/users.module';
 @Module({
-  imports: [AuthModule, CharactersModule, DbConfigModule, FeedInfoModule, PlanetsModule, UsersModule, FavoritesModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env`,
+    }),
+    AuthModule,
+    CharactersModule,
+    DbConfigModule,
+    FeedInfoModule,
+    PlanetsModule,
+    UsersModule,
+    FavoritesModule,
+  ],
 })
 export class AppModule {}
